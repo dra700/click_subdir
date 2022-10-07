@@ -1,0 +1,8 @@
+.DS_Store/
+.vscode/
+.credentials
+.venv
+*.pyc
+*.swp
+*.egg-info
+
