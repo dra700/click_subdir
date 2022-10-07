@@ -1,19 +1,30 @@
 import click
+import os
 
-@click.group()
-def cli(**kwargs):
-    print(1)
+plugin_folder = os.path.join(os.path.dirname(__file__), 'commands')
 
-@cli.group()
-@click.option("--something")
-@click.option("--else")
-def what(**kwargs):
-    print(2)
+class MyCLI(click.MultiCommand):
+    def list_commands(self, ctx):
+        rv = []
+        for filename in os.listdir(plugin_folder):
+            if filename.endswith('.py') and filename != '__init__.py':
+                rv.append(filename[:-3])
+        rv.sort()
+        return rv
 
-@what.command()
-@click.option("--chaa")
-def ever(**kwargs):
-    print(3)
+    def get_command(self, ctx, name):
+        ns = {}
+        fn = os.path.join(plugin_folder, name + '.py')
+        with open(fn) as f:
+            code = compile(f.read(), fn, 'exec')
+            eval(code, ns, ns)
+        return ns['cli']
+
+cli = MyCLI(help='This tool\'s subcommands are loaded from a plugin folder dynamically.')
 
 if __name__ == '__main__':
     cli()
+
+#@click.command(cls=MyCLI)
+#def cli():
+#    click.echo('cli')
