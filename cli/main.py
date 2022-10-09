@@ -24,7 +24,3 @@ cli = MyCLI(help='This tool\'s subcommands are loaded from a plugin folder dynam
 
 if __name__ == '__main__':
     cli()
-
-#@click.command(cls=MyCLI)
-#def cli():
-#    click.echo('cli')
